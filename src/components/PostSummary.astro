@@ -1,0 +1,32 @@
+---
+import { useTranslate } from '@/i18n'
+import { formatPostDate, getPostTagUrl, getPostUrl } from '@/post'
+import type { PostEntry } from '@/post'
+import { themeConfig } from '@/theme.config'
+
+interface Props {
+  postEntry: PostEntry
+}
+const { postEntry } = Astro.props
+const { t } = useTranslate(themeConfig.site.locale)
+---
+
+<div>
+  <h2 class="text-5 font-bold mb-2">
+    <a class="link" href={getPostUrl(postEntry)}>{postEntry.data.title}</a>
+  </h2>
+  <p class="text-3.5 mb-2 space-x-2">
+    {postEntry.data.pinned && <span class="">{t('pinned')}</span>}
+    <span>{t('posted_at')} {formatPostDate(postEntry.data.pubDate, themeConfig.site.locale)}</span>
+    {
+      postEntry.data.tags.map((tag) => (
+        <a href={getPostTagUrl(tag)} class="link">
+          <span> # {tag} </span>
+        </a>
+      ))
+    }
+  </p>
+  <p>
+    {postEntry.data.description}
+  </p>
+</div>

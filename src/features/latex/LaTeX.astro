@@ -1,0 +1,6 @@
+---
+import { themeConfig } from '@/theme.config'
+import KaTex from './KaTex.astro'
+---
+
+{themeConfig.latex.provider === 'katex' && <KaTex />}

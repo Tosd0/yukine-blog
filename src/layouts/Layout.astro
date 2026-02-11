@@ -1,0 +1,136 @@
+---
+import SiteCredits from '@/components/SiteCredits.astro'
+import SiteNavigation from '@/components/SiteNavigation.astro'
+import SiteSocial from '@/components/SiteSocial.astro'
+import SiteTitle from '@/components/SiteTitle.astro'
+import LaTeX from '@/features/latex/LaTeX.astro'
+import Seo from '@/features/seo/SEO.astro'
+import { themeConfig } from '@/theme.config'
+import { ClientRouter } from 'astro:transitions'
+import '@/styles/main.css'
+import Analytics from '@/features/analytics/Analytics.astro'
+
+const { title = themeConfig.site.title } = Astro.props
+
+const mainAnimation = {
+  old: { name: 'fade-in-down', duration: '0.5s', easing: 'linear', direction: 'reverse' },
+  new: { name: 'fade-in-down', duration: '0.5s', delay: '0.5s', easing: 'linear' },
+}
+
+const footerAnimation = {
+  old: { name: 'fade-in-down', duration: '0s', easing: 'linear', direction: 'reverse' },
+  new: { name: 'fade-in-down', duration: '0.5s', delay: '0.5s', easing: 'linear' },
+}
+
+const mainTransition = {
+  forwards: mainAnimation,
+  backwards: mainAnimation,
+}
+
+const footerTransition = {
+  forwards: footerAnimation,
+  backwards: footerAnimation,
+}
+---
+
+<html lang={themeConfig.site.locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <Seo title={title} />
+    <LaTeX />
+    <ClientRouter />
+    <Analytics />
+  </head>
+
+  <body>
+    <div class:list={['container mx-auto', 'lg:flex lg:flex-row-reverse lg:justify-center']}>
+      <header
+        id="site-header"
+        class:list={[
+          'p-7.5 flex flex-col gap-2.5',
+          'lg:h-svh lg:justify-end lg:gap-12 lg:sticky lg:top-0 lg:py-20 lg:w-1/4',
+        ]}
+      >
+        <div class:list={['mb-auto', 'lg:mt-0']}>
+          <SiteTitle />
+        </div>
+
+        <nav class:list={['flex flex-col gap-3.5']}>
+          <SiteNavigation />
+          <SiteSocial />
+        </nav>
+
+        <div class:list={['hidden', 'lg:block']}>
+          <SiteCredits />
+        </div>
+      </header>
+
+      <main
+        transition:animate={mainTransition}
+        id="site-main"
+        class:list={['px-7.5', 'lg:grow lg:py-20 lg:flex lg:justify-center']}
+      >
+        <slot />
+      </main>
+
+      <footer transition:animate={footerTransition} id="site-footer" class:list={['p-7.5', 'lg:hidden ']}>
+        <SiteCredits />
+      </footer>
+    </div>
+  </body>
+</html>
+
+<script>
+  document.addEventListener(
+    'astro:page-load',
+    () => {
+      const siteHeader = document.getElementById('site-header')
+      const siteMain = document.getElementById('site-main')
+      const siteFooter = document.getElementById('site-footer')
+      siteHeader?.classList.add('animate-fade-in-down', 'lg:animate-fade-in-left')
+      siteMain?.classList.add('animate-fade-in-down')
+      siteFooter?.classList.add('animate-fade-in-down')
+    },
+    { once: true },
+  )
+</script>
+
+<style scoped>
+  :root {
+    /* [HACK] UnoCSS dose not generate neutral background color variable */
+    --neutral-background: theme('colors.neutral');
+  }
+  body {
+    background-size: 7px 7px;
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--neutral-background) 4%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--neutral-background) 4%, transparent) 1px, transparent 1px);
+  }
+
+  @keyframes fade-in-down {
+    0% {
+      transform: translateY(-1rem);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-in-left {
+    0% {
+      opacity: 0;
+      transform: translateX(1rem);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+</style>

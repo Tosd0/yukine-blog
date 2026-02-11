@@ -1,0 +1,30 @@
+---
+import { themeConfig } from '@/theme.config'
+
+const { comment } = themeConfig
+
+if (!comment || !comment.giscus) {
+  throw new Error('Giscus comments are not configured')
+}
+
+const giscus = comment.giscus
+---
+
+<script
+  is:inline
+  async
+  crossorigin="anonymous"
+  src={giscus.scriptUrl ?? 'https://giscus.app/client.js'}
+  data-repo={giscus.repo}
+  data-repo-id={giscus.repoId}
+  data-category={giscus.category}
+  data-category-id={giscus.categoryId}
+  data-mapping={giscus.mapping ?? 'pathname'}
+  data-term={giscus.term}
+  data-strict={giscus.strict ?? '0'}
+  data-reactions-enabled={giscus.reactionsEnabled ?? '1'}
+  data-emit-metadata={giscus.emitMetadata ?? '0'}
+  data-input-position={giscus.inputPosition ?? 'bottom'}
+  data-theme={giscus.theme ?? 'preferred_color_scheme'}
+  data-lang={giscus.lang ?? 'zh-CN'}
+  data-loading={giscus.loading}></script>

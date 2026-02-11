@@ -1,0 +1,49 @@
+---
+import { useTranslate } from '@/i18n'
+import { getPostEntries, pinPostEntries, sortPostEntriesByDate } from '@/post'
+import Layout from '@/layouts/Layout.astro'
+import PostSummary from '@/components/PostSummary.astro'
+import type { InferGetStaticPropsType, GetStaticPaths } from 'astro'
+import Pagination from '@/components/Pagination.astro'
+import { themeConfig } from '@/theme.config'
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const postEntries = await getPostEntries()
+  const sortedEntries = sortPostEntriesByDate(postEntries)
+  const pinnedEntries = pinPostEntries(sortedEntries)
+
+  return paginate(pinnedEntries, {
+    pageSize: 5,
+  })
+}) satisfies GetStaticPaths
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>
+
+const { page } = Astro.props
+const { t } = useTranslate(themeConfig.site.locale)
+---
+
+<Layout>
+  <div class="max-w-2xl w-full">
+    <ul class="flex flex-col gap-7.5">
+      {
+        page.data.map((postEntry) => (
+          <li>
+            <PostSummary postEntry={postEntry} />
+          </li>
+        ))
+      }
+    </ul>
+
+    <Pagination
+      showLeft={Boolean(page.url.prev)}
+      leftTitle={t('prev')}
+      leftUrl={page.url.prev}
+      showRight={Boolean(page.url.next)}
+      rightTitle={t('next')}
+      rightUrl={page.url.next}
+      currentPage={page.currentPage}
+      totalPage={page.lastPage}
+    />
+  </div>
+</Layout>

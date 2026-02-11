@@ -1,0 +1,25 @@
+---
+import { themeConfig } from '@/theme.config'
+import type { PostEntry } from '@/post/types'
+import Disqus from './Disqus.astro'
+import Giscus from './Giscus.astro'
+import Twikoo from './Twikoo.astro'
+
+interface Props {
+  entry: PostEntry
+}
+
+const { entry } = Astro.props
+const url = Astro.url.href
+const provider = themeConfig.comment.provider
+---
+
+{
+  provider !== 'none' && (
+    <div class="py-16 giscus">
+      {provider === 'disqus' && <Disqus identifier={entry.id} url={url} title={entry.data.title} />}
+      {provider === 'giscus' && <Giscus />}
+      {provider === 'twikoo' && <Twikoo />}
+    </div>
+  )
+}

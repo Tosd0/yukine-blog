@@ -1,0 +1,77 @@
+---
+import Pagination from '@/components/Pagination.astro'
+import Layout from '@/layouts/Layout.astro'
+import { useTranslate } from '@/i18n'
+import {
+  formatPostDate,
+  getPostEntries,
+  getPostTagUrl,
+  getPostUrl,
+  pinPostEntries,
+  sortPostEntriesByDate,
+} from '@/post'
+import { themeConfig } from '@/theme.config'
+import { render } from 'astro:content'
+import Comment from '@/features/comment/Comment.astro'
+
+export async function getStaticPaths() {
+  const posts = await getPostEntries()
+  const sortedPosts = sortPostEntriesByDate(posts)
+  const pinnedPosts = pinPostEntries(sortedPosts)
+
+  return pinnedPosts.map((post, index) => {
+    const prevPost = pinnedPosts[index - 1] || null
+    const nextPost = pinnedPosts[index + 1] || null
+    return {
+      params: { slug: post.id },
+      props: { postEntry: post, prevPost, nextPost },
+    }
+  })
+}
+
+const { postEntry, prevPost, nextPost } = Astro.props
+const { t } = useTranslate(themeConfig.site.locale)
+const prevTitle = prevPost ? `${t('prev_post')}: ${prevPost.data.title}` : undefined
+const nextTitle = nextPost ? `${t('next_post')}: ${nextPost.data.title}` : undefined
+const { Content } = await render(postEntry)
+---
+
+<Layout title={postEntry.data.title} description={postEntry.data.description}>
+  <div class="max-w-2xl w-full">
+    <header>
+      <h2 class="text-6 font-bold mb-2">
+        <a class="link" href={getPostUrl(postEntry)}>{postEntry.data.title}</a>
+      </h2>
+      <div class="text-3.5 mb-8">
+        <time datetime={postEntry.data.pubDate.toString()}
+          >{t('posted_at')} {formatPostDate(postEntry.data.pubDate, themeConfig.site.locale)}</time
+        >
+        {
+          postEntry.data.tags.map((tag) => (
+            <a href={getPostTagUrl(tag)} class="link">
+              <span> # {tag} </span>
+            </a>
+          ))
+        }
+      </div>
+    </header>
+
+    <article class="heti">
+      <Content />
+    </article>
+
+    <footer class="py-5">
+      <Pagination
+        showLeft={Boolean(prevPost)}
+        leftTitle={prevTitle}
+        leftUrl={getPostUrl(prevPost)}
+        showRight={Boolean(nextPost)}
+        rightTitle={nextTitle}
+        rightUrl={getPostUrl(nextPost)}
+        showPageCount={false}
+      />
+    </footer>
+
+    {themeConfig.comment.provider !== 'none' && <Comment entry={postEntry} />}
+  </div>
+</Layout>

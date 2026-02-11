@@ -1,0 +1,57 @@
+---
+import { useTranslate } from '@/i18n'
+import { themeConfig } from '@/theme.config'
+
+interface Props {
+  showLeft?: boolean
+  leftTitle?: string
+  leftUrl?: string
+
+  showRight?: boolean
+  rightTitle?: string
+  rightUrl?: string
+
+  showPageCount?: boolean
+  currentPage?: number
+  totalPage?: number
+}
+
+const {
+  showLeft = true,
+  showRight = true,
+  leftTitle,
+  rightTitle,
+  leftUrl,
+  rightUrl,
+  showPageCount = true,
+  currentPage,
+  totalPage,
+} = Astro.props
+
+const { t } = useTranslate(themeConfig.site.locale)
+const pageNumberText = t('page_number', currentPage ?? 0)
+const pageCountText = t('page_count', totalPage ?? 0)
+---
+
+<div class="mt-5">
+  {showPageCount && <div class="mb-2.5">{`${pageNumberText} / ${pageCountText}`}</div>}
+
+  <div class="flex items-center gap-4">
+    {
+      showLeft && (
+        <a title={leftTitle} href={leftUrl} class="link flex-center">
+          <span class="iconify mdi--chevron-double-left " />
+          <span>{leftTitle}</span>
+        </a>
+      )
+    }
+    {
+      showRight && (
+        <a title={rightTitle} href={rightUrl} class="link flex-center">
+          <span>{rightTitle}</span>
+          <span class="iconify mdi--chevron-double-right " />
+        </a>
+      )
+    }
+  </div>
+</div>
