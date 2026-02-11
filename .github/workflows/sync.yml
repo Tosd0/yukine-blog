@@ -4,8 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       pageId:
-        description: 'Notion page ID (32 chars without hyphens)'
+        description: Notion page ID
         required: true
+  repository_dispatch:
+    types: [webhook-trigger]
 
 permissions:
   contents: write
@@ -29,24 +31,28 @@ jobs:
         run: npm install -g pnpm && pnpm install --frozen-lockfile
 
       - name: Sync page
-        run: pnpm tsx scripts/syncNotion.ts
+        id: sync
+        run: |
+          META=$(pnpm tsx scripts/syncNotion.ts)
+          SLUG=$(echo "$META" | jq -r '.slug // empty')
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          NOTION_PAGE_ID: ${{ inputs.pageId }}
+          NOTION_PAGE_ID: ${{ inputs.pageId || github.event.client_payload.pageId }}
 
       - name: Commit & Push
         run: |
           echo "Checking for changes..."
           git status --porcelain
-
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to commit."
             exit 0
           fi
-
+          PAGE_ID="${{ inputs.pageId || github.event.client_payload.pageId }}"
+          SLUG="${{ steps.sync.outputs.slug }}"
+          MSG="sync: page ${SLUG:-$PAGE_ID} ($PAGE_ID)"
           git config user.name "notion-sync-bot"
           git config user.email "notion-sync-bot@users.noreply.github.com"
-
           git add -A
-          git commit -m "sync: notion page ${{ inputs.pageId }}"
+          git commit -m "$MSG"
           git push
