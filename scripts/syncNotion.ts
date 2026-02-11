@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import process from 'node:process'
 import { pathToFileURL } from 'node:url'
 import { Client } from '@notionhq/client'
 import { NotionToMarkdown } from 'notion-to-md'
@@ -27,12 +28,7 @@ async function main() {
   const n2m = new NotionToMarkdown({ notionClient: notion })
   installCustomTransformer(n2m, notion)
 
-  try {
-    await exportPage(notion, n2m, notionPageId)
-  }
-  catch (err) {
-    throw err
-  }
+  await exportPage(notion, n2m, notionPageId)
 }
 
 /**
@@ -73,7 +69,9 @@ function installCustomTransformer(n2m: NotionToMarkdown, notion: Client) {
  * 增强代码块解析器
  */
 async function parseEnhanceCodeBlock(block: any, n2m: NotionToMarkdown): Promise<string | false> {
-  if (!block || typeof block !== 'object' || block.type !== 'code') { return false }
+  if (!block || typeof block !== 'object' || block.type !== 'code') {
+    return false
+  }
 
   const code = block.code as { rich_text?: any[], language?: string }
   const languageRaw = typeof code?.language === 'string' ? code.language : ''
@@ -84,9 +82,9 @@ async function parseEnhanceCodeBlock(block: any, n2m: NotionToMarkdown): Promise
   const lines = normalized.split('\n')
   const firstLine = lines[0] ?? ''
 
-  const directiveMatch = firstLine.match(/^\s*\/\/\s*(.+?)\s*$/)
-  const directiveMeta = (directiveMatch?.[1] ?? '').trim()
-  const hasDirectiveMeta = Boolean(directiveMeta && /^(title|ins|del|mark)=/i.test(directiveMeta))
+  const trimmedLine = firstLine.trimStart()
+  const directiveMeta = trimmedLine.startsWith('//') ? trimmedLine.slice(2).trim() : ''
+  const hasDirectiveMeta = Boolean(directiveMeta && /^(?:title|ins|del|mark)=/i.test(directiveMeta))
 
   const meta = hasDirectiveMeta ? directiveMeta : null
   const content = (hasDirectiveMeta ? lines.slice(1).join('\n') : normalized).trimEnd()
@@ -101,24 +99,36 @@ async function parseEnhanceCodeBlock(block: any, n2m: NotionToMarkdown): Promise
  */
 async function parseCalloutBlock(block: any, n2m: NotionToMarkdown, notion: Client): Promise<string | false> {
   type ObsidianCalloutType = 'note' | 'tip' | 'important' | 'warning' | 'caution'
-  if (!block || typeof block !== 'object' || block.type !== 'callout') { return false }
+  if (!block || typeof block !== 'object' || block.type !== 'callout') {
+    return false
+  }
 
   const allowedCalloutTypes: ReadonlySet<string> = new Set(['note', 'tip', 'important', 'warning', 'caution'])
 
   const parseHeader = (input: string): { type: ObsidianCalloutType, title: string, body: string } => {
     const lines = (input ?? '').replace(/\r\n/g, '\n').split('\n')
     const firstNonEmptyIndex = lines.findIndex(l => l.trim())
-    if (firstNonEmptyIndex === -1) { return { type: 'note', title: '', body: '' } }
+    if (firstNonEmptyIndex === -1) {
+      return { type: 'note', title: '', body: '' }
+    }
 
     const firstLine = lines[firstNonEmptyIndex]!.trim()
-    const match = firstLine.match(/^([a-z]+)(?:\s+(.*))?$/i)
-    const keyword = match?.[1]?.toLowerCase() ?? ''
+    const firstWhitespaceIndex = firstLine.search(/\s/)
+    const keyword = (
+      firstWhitespaceIndex === -1
+        ? firstLine
+        : firstLine.slice(0, firstWhitespaceIndex)
+    ).toLowerCase()
     if (!allowedCalloutTypes.has(keyword)) {
       return { type: 'note', title: '', body: input }
     }
 
     const type = keyword as ObsidianCalloutType
-    const title = (match?.[2] ?? '').trim()
+    const title = (
+      firstWhitespaceIndex === -1
+        ? ''
+        : firstLine.slice(firstWhitespaceIndex + 1)
+    ).trim()
     const body = lines
       .slice(firstNonEmptyIndex + 1)
       .join('\n')
@@ -197,7 +207,14 @@ function extractMeta(page: any): {
     throw new Error(`Notion page meta missing/invalid field (${pageId}): category`)
   }
   const category = String(categoryRaw ?? '')
-    .replace(/[<>:"/\\|?*\u0000-\u001F]/g, ' ')
+    .split('')
+    .map((ch) => {
+      const charCode = ch.charCodeAt(0)
+      const isReservedChar = '<>:"/\\|?*'.includes(ch)
+      const isControlChar = charCode <= 0x1F
+      return isReservedChar || isControlChar ? ' ' : ch
+    })
+    .join('')
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/[. ]+$/g, '')
@@ -272,15 +289,21 @@ function buildFrontmatter(meta: ReturnType<typeof extractMeta>): string {
  * - `datetime` -> `YYYY-MM-DD HH:mm:ss`
  */
 function formatTime(isoString: string, mode: 'date' | 'datetime'): string {
-  if (!isoString) { return '' }
+  if (!isoString) {
+    return ''
+  }
   const date = new Date(isoString)
-  if (Number.isNaN(date.getTime())) { return '' }
+  if (Number.isNaN(date.getTime())) {
+    return ''
+  }
 
   const pad2 = (n: number) => String(n).padStart(2, '0')
   const y = date.getFullYear()
   const m = pad2(date.getMonth() + 1)
   const d = pad2(date.getDate())
-  if (mode === 'date') { return `${y}-${m}-${d}` }
+  if (mode === 'date') {
+    return `${y}-${m}-${d}`
+  }
 
   const hh = pad2(date.getHours())
   const mm = pad2(date.getMinutes())
@@ -364,7 +387,9 @@ function quoteLines(text: string): string {
  */
 const isEntrypoint = (() => {
   const entry = process.argv[1]
-  if (!entry) { return false }
+  if (!entry) {
+    return false
+  }
   return import.meta.url === pathToFileURL(entry).href
 })()
 
