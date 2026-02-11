@@ -2,11 +2,11 @@ import { defineThemeConfig } from './config'
 
 export const themeConfig = defineThemeConfig({
   site: {
-    author: 'Moeyua',
-    description: 'Rediscory the beauty of typography',
-    title: '活版印字',
-    subtitle: 'Typography',
-    website: 'https://typography.moeyua.com/',
+    author: 'Tosd0',
+    description: '生於心，有節於外，謂之音。',
+    title: '雪音',
+    subtitle: 'Yukine / ゆきね',
+    website: 'https://yukine.cc',
     locale: 'zh-cn',
     navigationLinks: [
       {
@@ -29,7 +29,7 @@ export const themeConfig = defineThemeConfig({
     socialLinks: [
       {
         title: 'github',
-        url: 'https://github.com',
+        url: 'https://github.com/tosd0',
         icon: 'i-mdi-github',
       },
       {
@@ -38,14 +38,9 @@ export const themeConfig = defineThemeConfig({
         icon: 'i-mdi-rss',
       },
       {
-        title: 'twitter',
-        url: 'https://twitter.com',
-        icon: 'i-mdi-twitter',
-      },
-      {
-        title: 'mastodon',
-        url: 'https://mastodon.social',
-        icon: 'i-mdi-mastodon',
+        title: 'email',
+        url: 'mailto:hi@yukine.cc',
+        icon: 'i-mdi-email-outline',
       },
     ],
   },
@@ -56,7 +51,7 @@ export const themeConfig = defineThemeConfig({
   },
   seo: {
     twitter: {
-      username: '@moeyua13',
+      username: '',
     },
   },
   latex: {
@@ -65,17 +60,17 @@ export const themeConfig = defineThemeConfig({
   comment: {
     provider: 'disqus',
     disqus: {
-      shortname: 'typography-astro',
+      shortname: 'YOUR_DISQUS_SHORTNAME',
     },
     twikoo: {
-      envId: 'https://twikoo-tau-flame.vercel.app',
+      envId: '',
     },
     giscus: {
       scriptUrl: 'https://giscus.app/client.js',
-      repo: 'moeyua/astro-theme-typography',
-      repoId: 'R_kgDOKy9HOQ',
-      category: 'General',
-      categoryId: 'DIC_kwDOKy9HOc4CUZP7',
+      repo: '',
+      repoId: '',
+      category: '',
+      categoryId: '',
       mapping: 'pathname',
       strict: '1',
       reactionsEnabled: '1',
@@ -89,11 +84,11 @@ export const themeConfig = defineThemeConfig({
   analytics: {
     provider: 'umami',
     google: {
-      measurementId: 'G-TFT0WTWV89',
+      measurementId: '',
     },
     umami: {
-      websiteId: 'df27d14d-1306-4f2b-ad16-9f30be54b80a',
-      scriptUrl: 'https://umami.moeyua.com/script.js',
+      websiteId: 'YOUR_UMAMI_WEBSITE_ID',
+      scriptUrl: 'https://analytics.umami.is/script.js',
     },
   },
   appearance: {

@@ -1,7 +1,7 @@
 ---
 import { themeConfig } from '@/theme.config'
 
-const { website, author } = themeConfig.site
+const { author } = themeConfig.site
 
 const year = new Date().getFullYear()
 
@@ -10,18 +10,14 @@ const { class: className } = Astro.props
 
 <div class={className}>
   <p class="font-bold text-3">
-    <span>© {year} </span>
-    <a target="_blank" class="link" href={website}>{author}</a>
+    <span>© {year} {author}</span>
   </p>
 
   <p class="font-bold text-3">
-    <span>Theme</span>
-    <a target="_blank" class="link" href="https://github.com/Moeyua/astro-theme-typography"> Typography </a>
-    <span>by</span>
-    <a target="_blank" class="link" href="https://moeyua.com">Moeyua</a>
-  </p>
-  <p class="font-bold text-3">
-    <span>Proudly published with</span>
+    <span>Theme from </span>
+    <a target="_blank" class="link" href="https://typography.moeyua.com">Typography</a>
+    <span> · </span>
+    <span>Powered by </span>
     <a class="link" target="_blank" href="https://astro.build/">Astro</a>
   </p>
 </div>

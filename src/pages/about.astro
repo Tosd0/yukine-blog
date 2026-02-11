@@ -1,0 +1,55 @@
+---
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout title="关于">
+  <div class="max-w-2xl w-full">
+    <header class="mb-10">
+      <h1 class="text-7 font-bold mb-4">关于</h1>
+      <p class="text-4">雪音（Yukine / ゆきね）</p>
+    </header>
+
+    <section class="space-y-4 mb-10">
+      <p>音，聲也。生於心，有節於外，謂之音。——《说文》</p>
+
+      <p>这里是 Tosd0 的个人博客，用来存放随笔和笔记等，也会涉及日常开发、工具实践等经验。</p>
+    </section>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <section class="border border-primary/20 rounded p-4">
+        <h2 class="text-5 font-bold mb-4">联系</h2>
+        <ul class="flex flex-col gap-2">
+          <li>
+            GitHub:
+            <a class="link" href="https://github.com/tosd0" target="_blank" rel="noreferrer">https://github.com/tosd0</a
+            >
+          </li>
+          <li>
+            Email:
+            <a class="link" href="mailto:hi@yukine.cc">hi@yukine.cc</a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="border border-primary/20 rounded p-4">
+        <h2 class="text-5 font-bold mb-4">致谢</h2>
+        <p class="mb-3">
+          博客实现思路来自
+          <a class="link" target="_blank" rel="noreferrer" href="https://www.yoake.cc"> @YOAKE </a>
+          的
+          <a class="link" target="_blank" rel="noreferrer" href="https://www.yoake.cc/posts/20251222-71d5/"> 文章 </a>
+          。
+        </p>
+        <p>
+          模板来自
+          <a class="link" target="_blank" rel="noreferrer" href="https://typography.moeyua.com"> @Moeyua </a>
+          的
+          <a class="link" target="_blank" rel="noreferrer" href="https://github.com/Moeyua/astro-theme-typography">
+            Typography
+          </a>
+          。
+        </p>
+      </section>
+    </div>
+  </div>
+</Layout>

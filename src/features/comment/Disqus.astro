@@ -9,11 +9,7 @@ interface Props {
 
 const { identifier, url, title } = Astro.props
 const { comment } = themeConfig
-
-if (!comment || !comment.disqus) {
-  throw new Error('Disqus comments are not configured')
-}
-const shortname = comment.disqus.shortname
+const shortname = comment.disqus?.shortname
 ---
 
 <div id="disqus_thread"></div>

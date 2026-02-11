@@ -5,7 +5,10 @@ import Umami from './Umami.astro'
 import { themeConfig } from '@/theme.config'
 
 const provider = themeConfig.analytics.provider
+const umamiWebsiteId = themeConfig.analytics.umami?.websiteId?.trim()
+const umamiPlaceholders = new Set(['YOUR_UMAMI_WEBSITE_ID', 'your-umami-website-id'])
+const isUmamiConfigured = Boolean(umamiWebsiteId && !umamiPlaceholders.has(umamiWebsiteId))
 ---
 
 {provider === 'google' && <Google />}
-{provider === 'umami' && <Umami />}
+{provider === 'umami' && isUmamiConfigured && <Umami />}

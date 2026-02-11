@@ -9,13 +9,16 @@ interface Props {
 }
 
 const { title = themeConfig.site.title, description = themeConfig.site.description } = Astro.props
+const siteTitle = themeConfig.site.title
+const resolvedTitle = title === siteTitle ? siteTitle : `${title} / ${siteTitle}`
+const twitterUsername = themeConfig.seo?.twitter?.username?.trim()
 
 const twitter: AstroSeoProps['twitter'] = {
-  title: title,
+  title: resolvedTitle,
   description: description,
   card: 'summary_large_image',
-  site: themeConfig.seo?.twitter?.username,
-  creator: themeConfig.seo?.twitter?.username,
+  site: twitterUsername || undefined,
+  creator: twitterUsername || undefined,
   // [TODO]: Add a proper image URL for the Twitter card
   image: '',
   imageAlt: '',
@@ -23,7 +26,7 @@ const twitter: AstroSeoProps['twitter'] = {
 
 const openGraph: AstroSeoProps['openGraph'] = {
   basic: {
-    title: title,
+    title: resolvedTitle,
     type: 'article',
     url: themeConfig.site.website,
     // [TODO]: Add a proper image URL for the Open Graph card
@@ -39,4 +42,4 @@ const openGraph: AstroSeoProps['openGraph'] = {
 }
 ---
 
-<AstroSEO title={title} description={description} twitter={twitter} openGraph={openGraph} />
+<AstroSEO title={resolvedTitle} description={description} twitter={twitter} openGraph={openGraph} />

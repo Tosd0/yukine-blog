@@ -29,7 +29,7 @@ export interface FeedConfig {
 
 export interface SeoConfig {
   twitter: {
-    username: string
+    username?: string
   }
 }
 

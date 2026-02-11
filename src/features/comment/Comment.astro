@@ -12,12 +12,17 @@ interface Props {
 const { entry } = Astro.props
 const url = Astro.url.href
 const provider = themeConfig.comment.provider
+const disqusShortname = themeConfig.comment.disqus?.shortname?.trim()
+const disqusPlaceholders = new Set(['YOUR_DISQUS_SHORTNAME', 'your-disqus-shortname', 'typography-astro'])
+const isDisqusConfigured = Boolean(disqusShortname && !disqusPlaceholders.has(disqusShortname))
+const shouldRenderDisqus = provider === 'disqus' && isDisqusConfigured
+const shouldRenderComment = shouldRenderDisqus || provider === 'giscus' || provider === 'twikoo'
 ---
 
 {
-  provider !== 'none' && (
+  shouldRenderComment && (
     <div class="py-16 giscus">
-      {provider === 'disqus' && <Disqus identifier={entry.id} url={url} title={entry.data.title} />}
+      {shouldRenderDisqus && <Disqus identifier={entry.id} url={url} title={entry.data.title} />}
       {provider === 'giscus' && <Giscus />}
       {provider === 'twikoo' && <Twikoo />}
     </div>
