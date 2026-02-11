@@ -1,0 +1,9 @@
+.heti code {
+  --at-apply: 'text-#c7254e bg-#f9f2f4';
+  --at-apply: 'py-0.5 px-1';
+  --at-apply: ' break-words';
+}
+
+.heti a {
+  --at-apply: 'underline';
+}
