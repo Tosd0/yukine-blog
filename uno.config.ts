@@ -24,7 +24,7 @@ export default defineConfig({
     },
     font: {
       serif: 'HiraMinProN-W6, Source Han Serif CN, Source Han Serif SC, Source Han Serif TC, serif',
-      sans: 'Source Sans Pro, Roboto, Helvetica, Helvetica Neue, Source Han Sans SC, Source Han Sans TC, PingFang SC, PingFang HK, PingFang TC, sans-serif',
+      sans: '寒蝉全圆体, Source Sans Pro, Roboto, Helvetica, Helvetica Neue, Source Han Sans SC, Source Han Sans TC, PingFang SC, PingFang HK, PingFang TC, sans-serif',
     },
   },
   shortcuts: {
