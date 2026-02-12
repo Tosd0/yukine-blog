@@ -13,4 +13,10 @@ export default antfu(
       'pnpm/yaml-enforce-settings': 'off',
     },
   },
+  {
+    files: ['src/contents/posts/**/*.md', 'src/contents/posts/**/*.mdx'],
+    rules: {
+      'no-irregular-whitespace': 'off',
+    },
+  },
 )
