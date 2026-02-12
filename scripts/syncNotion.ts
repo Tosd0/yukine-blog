@@ -266,6 +266,15 @@ function buildFrontmatter(meta: ReturnType<typeof extractMeta>): string {
     return `'${String(value ?? '').replace(/'/g, '\'\'')}'`
   }
 
+  const formatTag = (tag: string): string => {
+    // 如果标签包含空格或特殊字符，使用双引号包裹
+    if (/[\s,[\]:]/.test(tag)) {
+      return `"${tag.replace(/"/g, '\\"')}"`
+    }
+    // 否则直接返回原始标签
+    return tag
+  }
+
   const lines: string[] = []
 
   lines.push('---')
@@ -275,7 +284,7 @@ function buildFrontmatter(meta: ReturnType<typeof extractMeta>): string {
   }
   lines.push(`description: ${singleQuote(meta.description)}`)
   lines.push(`pubDate: ${formatTime(meta.createTime, 'date')}`)
-  lines.push(`categories: [${(meta.tags ?? []).map(t => singleQuote(t)).join(', ')}]`)
+  lines.push(`tags: [${(meta.tags ?? []).map(t => formatTag(t)).join(', ')}]`)
   lines.push(`modDate: ${formatTime(meta.lastEditedTime, 'date')}`)
   lines.push(`draft: ${!meta.completed}`)
   lines.push(`pinned: ${meta.top}`)
