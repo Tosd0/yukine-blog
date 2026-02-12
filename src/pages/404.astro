@@ -1,0 +1,20 @@
+---
+import ErrorPageView from '@/components/ErrorPageView.astro'
+import { getErrorPageContent } from '@/config/error-pages'
+import Layout from '@/layouts/Layout.astro'
+import { themeConfig } from '@/theme.config'
+
+const content = getErrorPageContent(themeConfig.site.locale, '404')
+---
+
+<Layout title={`${content.statusCode} ${content.statusText}`}>
+  <div class="w-full max-w-2xl flex items-start lg:items-center">
+    <ErrorPageView
+      statusCode={content.statusCode}
+      statusText={content.statusText}
+      message={content.message}
+      actions={content.actions}
+      locale={themeConfig.site.locale}
+    />
+  </div>
+</Layout>
