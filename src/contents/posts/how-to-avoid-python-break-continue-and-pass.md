@@ -1,5 +1,5 @@
 ---
-title: 'Python Control Flow Alternatives: Avoiding break, continue, and pass'
+title: 'Python Control Flow Alternatives: Avoiding break, continue, and pass'
 slug: 'how-to-avoid-python-break-continue-and-pass'
 description: 'I like them, nevertheless.'
 pubDate: 2026-02-13
@@ -13,9 +13,9 @@ My programming lecturer hates break and continue. As using them may influence my
 
 ---
 
-## 1. Alternatives for `break`
+## 1. Alternatives for `break`
 
-The `break` statement exits a loop immediately. If we cannot use it, we have two main workarounds depending on the context.
+The `break` statement exits a loop immediately. If we cannot use it, we have two main workarounds depending on the context.
 
 **Example Code:**
 
@@ -31,7 +31,7 @@ for i in range(1, 6):
 
 We can introduce a boolean variable to skip the execution of the loop body once the condition is met.
 
-*Note: The* *`iteration`* *(迭代)* _**doesn't actually stop**\_\_. Even though the processing logic is skipped, the loop will run until the end of the sequence. This approach is_ _**less efficient**_ _for large lists._
+_Note: The_ _`iteration`_ _(迭代)_ _**doesn't actually stop**\_\_. Even though the processing logic is skipped, the loop will run until the end of the sequence. This approach is_ _**less efficient**_ _for large lists._
 
 ```python
 finish = False
@@ -46,7 +46,7 @@ for i in range(1, 6):
 
 ### Alternative B: Function Return
 
-By wrapping the loop inside a `function`, we can use the `return` statement to exit the loop and the function simultaneously. Pretty elegant and efficient though.
+By wrapping the loop inside a `function`, we can use the `return` statement to exit the loop and the function simultaneously. Pretty elegant and efficient though.
 
 ```python
 def _():
@@ -59,9 +59,9 @@ def _():
 _()
 ```
 
-## 2. Alternatives for `continue`
+## 2. Alternatives for `continue`
 
-The `continue` statement skips the rest of the current iteration and moves to the next one. We can easily bypass it using logical branches.
+The `continue` statement skips the rest of the current iteration and moves to the next one. We can easily bypass it using logical branches.
 
 **Example Code:**
 
@@ -87,9 +87,9 @@ for i in range(1, 6):
         print("Processing:", i)
 ```
 
-### Alternative B: The `if-else` Branch
+### Alternative B: The `if-else` Branch
 
-This is much cleaner than using a flag. We simply put the code that should be skipped into the `else` block.
+This is much cleaner than using a flag. We simply put the code that should be skipped into the `else` block.
 
 ```python
 for i in range(1, 6):
@@ -99,9 +99,9 @@ for i in range(1, 6):
         print("Processing:", i)
 ```
 
-## 3. Alternatives for `pass`
+## 3. Alternatives for `pass`
 
-The `pass` statement is just a placeholder. The easiest way to remove it is to reverse the logic of your condition.
+The `pass` statement is just a placeholder. The easiest way to remove it is to reverse the logic of your condition.
 
 **Example Code:**
 
@@ -115,7 +115,7 @@ for i in range(1, 6):
 
 ### Alternative: Reverse Condition
 
-By changing `==` to `!=`, we completely eliminate the need for an empty block.
+By changing `==` to `!=`, we completely eliminate the need for an empty block.
 
 ```python
 for i in range(1, 6):
