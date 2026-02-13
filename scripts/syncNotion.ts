@@ -41,7 +41,7 @@ async function exportPage(notion: Client, n2m: NotionToMarkdown, notionPageId: s
   const mdBlocks = await n2m.pageToMarkdown(notionPageId)
   const mdString = n2m.toMarkdownString(mdBlocks)
 
-  const content = `${(mdString.parent ?? '').trim()}\n`
+  const content = `${normalizeNotionText((mdString.parent ?? '').trim())}\n`
   const frontmatter = buildFrontmatter(meta)
   const md = `${frontmatter}\n\n${content}`
 
@@ -174,7 +174,7 @@ function extractMeta(page: any): {
   const title
     = props?.title?.type === 'title' && Array.isArray(props.title.title)
       ? props.title.title
-          .map((t: any) => t?.plain_text ?? '')
+          .map((t: any) => normalizeNotionText(t?.plain_text ?? ''))
           .join('')
           .trim()
       : ''
@@ -182,7 +182,7 @@ function extractMeta(page: any): {
   const slug
     = props?.slug?.type === 'rich_text' && Array.isArray(props.slug.rich_text)
       ? props.slug.rich_text
-          .map((t: any) => t?.plain_text ?? '')
+          .map((t: any) => normalizeNotionText(t?.plain_text ?? ''))
           .join('')
           .trim()
       : ''
@@ -190,7 +190,7 @@ function extractMeta(page: any): {
   const description
     = props?.description?.type === 'rich_text' && Array.isArray(props.description.rich_text)
       ? props.description.rich_text
-          .map((t: any) => t?.plain_text ?? '')
+          .map((t: any) => normalizeNotionText(t?.plain_text ?? ''))
           .join('')
           .trim()
       : ''
@@ -227,7 +227,7 @@ function extractMeta(page: any): {
     = props?.tags?.type === 'multi_select' && Array.isArray(props.tags.multi_select)
       ? props.tags.multi_select.map((t: any) => t?.name).filter(Boolean)
       : []
-  const trimmedTags = (tags ?? []).map((t: unknown) => String(t ?? '').trim()).filter(Boolean)
+  const trimmedTags = (tags ?? []).map((t: unknown) => normalizeNotionText(String(t ?? '')).trim()).filter(Boolean)
   if (trimmedTags.length === 0) {
     throw new Error(`Notion page meta missing/invalid field (${pageId}): tags`)
   }
@@ -321,6 +321,16 @@ function formatTime(isoString: string, mode: 'date' | 'datetime'): string {
 }
 
 /**
+ * 规范化 Notion 文本中的特殊空白字符，避免导出后出现异常超宽间距。
+ */
+function normalizeNotionText(input: string): string {
+  return String(input ?? '')
+    .replace(/\r\n/g, '\n')
+    .replace(/[\u00A0\u202F\u2007]/g, ' ')
+    .replace(/[\u200B-\u200D\u2060\uFEFF]/g, '')
+}
+
+/**
  * 生成文件路径：
  * - category 为 posts/jottings -> `src/contents/{category}/YYYYMMDD-{pageId[-4]}.md`
  * - 其他 -> `src/contents/docs/{category}/YYYYMMDD-{pageId[-4]}.md`
@@ -375,7 +385,8 @@ function richTextToMarkdown(n2m: NotionToMarkdown, richText: any[]): string {
       out += `$${content.equation?.expression ?? ''}$`
       continue
     }
-    const annotated = n2m.annotatePlainText(content.plain_text ?? '', content.annotations)
+    const plainText = normalizeNotionText(content.plain_text ?? '')
+    const annotated = n2m.annotatePlainText(plainText, content.annotations)
     out += content.href ? `[${annotated}](${content.href})` : annotated
   }
   return out
