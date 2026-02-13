@@ -5,7 +5,7 @@ description: 'I like them, nevertheless.'
 pubDate: 2026-02-13
 tags: [编程, Python]
 modDate: 2026-02-13
-draft: true
+draft: false
 pinned: false
 ---
 
@@ -31,7 +31,7 @@ for i in range(1, 6):
 
 We can introduce a boolean variable to skip the execution of the loop body once the condition is met.
 
-_Note: The_ _`iteration`_ _(迭代)_ _**doesn't actually stop**\_\_. Even though the processing logic is skipped, the loop will run until the end of the sequence. This approach is_ _**less efficient**_ _for large lists._
+Note: The `iteration` (迭代) **doesn't actually stop**. Even though the processing logic is skipped, the loop will run until the end of the sequence. This approach is **less efficient** for large lists.
 
 ```python
 finish = False
