@@ -1,19 +1,23 @@
 :root {
   text-autospace: normal;
+  color-scheme: light dark;
 }
 
 html {
   font-size: 16px;
   font-family: var(--font-sans);
   text-rendering: optimizeLegibility;
-  background-color: var(--colors-secondary);
+  background-color: var(--theme-secondary);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 body {
   min-height: 100svh;
   min-width: 100svw;
 
-  color: var(--colors-primary);
+  color: var(--theme-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

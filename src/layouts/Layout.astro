@@ -3,6 +3,7 @@ import SiteCredits from '@/components/SiteCredits.astro'
 import SiteNavigation from '@/components/SiteNavigation.astro'
 import SiteSocial from '@/components/SiteSocial.astro'
 import SiteTitle from '@/components/SiteTitle.astro'
+import ThemeToggle from '@/components/ThemeToggle.astro'
 import LaTeX from '@/features/latex/LaTeX.astro'
 import Seo from '@/features/seo/SEO.astro'
 import { themeConfig } from '@/theme.config'
@@ -48,6 +49,14 @@ const footerTransition = {
     <LaTeX />
     <ClientRouter />
     <Analytics />
+    <script is:inline>
+      ;(function () {
+        const theme = localStorage.getItem('theme')
+        if (theme === 'dark' || theme === 'light') {
+          document.documentElement.setAttribute('data-theme', theme)
+        }
+      })()
+    </script>
   </head>
 
   <body>
@@ -65,7 +74,10 @@ const footerTransition = {
 
         <nav class:list={['flex flex-col gap-3.5']}>
           <SiteNavigation />
-          <SiteSocial />
+          <div class="flex items-center gap-2 lg:justify-start justify-center">
+            <SiteSocial />
+            <ThemeToggle />
+          </div>
         </nav>
 
         <div class:list={['hidden', 'lg:block']}>
@@ -106,7 +118,7 @@ const footerTransition = {
 <style scoped>
   :root {
     /* [HACK] UnoCSS dose not generate neutral background color variable */
-    --neutral-background: theme('colors.neutral');
+    --neutral-background: var(--theme-neutral);
   }
   body {
     background-size: 7px 7px;

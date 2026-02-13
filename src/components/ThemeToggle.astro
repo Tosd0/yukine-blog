@@ -1,0 +1,69 @@
+---
+
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="Toggle theme"
+  title="Toggle theme"
+  class="inline-flex items-center justify-center text-xl opacity-60 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+>
+  <span id="theme-icon-light" class="i-mdi-white-balance-sunny hidden"></span>
+  <span id="theme-icon-dark" class="i-mdi-moon-waning-crescent hidden"></span>
+  <span id="theme-icon-system" class="i-mdi-theme-light-dark hidden"></span>
+</button>
+
+<script is:inline>
+  function getStoredTheme() {
+    return localStorage.getItem('theme')
+  }
+
+  function applyTheme(theme) {
+    const root = document.documentElement
+    root.removeAttribute('data-theme')
+    if (theme === 'dark' || theme === 'light') {
+      root.setAttribute('data-theme', theme)
+    }
+    updateIcon(theme || 'system')
+  }
+
+  function updateIcon(mode) {
+    const iconLight = document.getElementById('theme-icon-light')
+    const iconDark = document.getElementById('theme-icon-dark')
+    const iconSystem = document.getElementById('theme-icon-system')
+    if (!iconLight || !iconDark || !iconSystem) {
+      return
+    }
+    iconLight.classList.add('hidden')
+    iconDark.classList.add('hidden')
+    iconSystem.classList.add('hidden')
+    const icons = { light: iconLight, dark: iconDark, system: iconSystem }
+    const target = icons[mode] || iconSystem
+    target.classList.remove('hidden')
+  }
+
+  function cycleTheme() {
+    const current = getStoredTheme()
+    const sequence = { system: 'light', light: 'dark', dark: 'system' }
+    const next = sequence[current || 'system'] || 'system'
+    if (next === 'system') {
+      localStorage.removeItem('theme')
+      applyTheme(null)
+      return
+    }
+    localStorage.setItem('theme', next)
+    applyTheme(next)
+  }
+
+  function initToggle() {
+    const btn = document.getElementById('theme-toggle')
+    if (btn) {
+      btn.addEventListener('click', cycleTheme)
+    }
+    applyTheme(getStoredTheme())
+  }
+
+  initToggle()
+  document.addEventListener('astro:after-swap', initToggle)
+</script>

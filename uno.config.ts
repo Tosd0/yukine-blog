@@ -1,8 +1,6 @@
 import { defineConfig, presetIcons, presetWind4, transformerDirectives } from 'unocss'
 import { themeConfig } from './src/theme.config'
 
-const colors = themeConfig.appearance.theme === 'dark' ? themeConfig.appearance.colors.dark : themeConfig.appearance.colors.light
-
 export default defineConfig({
   presets: [
     presetWind4({
@@ -15,12 +13,40 @@ export default defineConfig({
   transformers: [transformerDirectives()],
   preflights: [
     {
-      getCSS: () => ``,
+      getCSS: () => {
+        const light = themeConfig.appearance.colors.light
+        const dark = themeConfig.appearance.colors.dark
+        return `
+:root {
+  --theme-primary: ${light.primary};
+  --theme-secondary: ${light.secondary};
+  --theme-accent: ${light.accent};
+  --theme-neutral: ${light.neutral};
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --theme-primary: ${dark.primary};
+    --theme-secondary: ${dark.secondary};
+    --theme-accent: ${dark.accent};
+    --theme-neutral: ${dark.neutral};
+  }
+}
+:root[data-theme="dark"] {
+  --theme-primary: ${dark.primary};
+  --theme-secondary: ${dark.secondary};
+  --theme-accent: ${dark.accent};
+  --theme-neutral: ${dark.neutral};
+}
+`
+      },
     },
   ],
   theme: {
     colors: {
-      ...colors,
+      primary: 'var(--theme-primary)',
+      secondary: 'var(--theme-secondary)',
+      accent: 'var(--theme-accent)',
+      neutral: 'var(--theme-neutral)',
     },
     font: {
       serif: 'HiraMinProN-W6, Source Han Serif CN, Source Han Serif SC, Source Han Serif TC, serif',
@@ -43,5 +69,8 @@ export default defineConfig({
   ],
   safelist: [
     ...themeConfig.site.socialLinks.map(social => `${social.icon}`),
+    'i-mdi-white-balance-sunny',
+    'i-mdi-moon-waning-crescent',
+    'i-mdi-theme-light-dark',
   ],
 })
