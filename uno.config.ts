@@ -69,8 +69,8 @@ export default defineConfig({
   ],
   safelist: [
     ...themeConfig.site.socialLinks.map(social => `${social.icon}`),
-    'i-mdi-white-balance-sunny',
-    'i-mdi-moon-waning-crescent',
-    'i-mdi-theme-light-dark',
+    'i-mdi-brightness-5',
+    'i-mdi-brightness-3',
+    'i-mdi-brightness-auto',
   ],
 })
